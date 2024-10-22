@@ -82,7 +82,6 @@ class Mission:
         reference = data[:,0]
         cave_height = data[:,1]
         cave_depth = data[:,2]
-        print("arr")
         return cls(reference, cave_height, cave_depth)
          
         
@@ -108,8 +107,6 @@ class ClosedLoop:
             observation_t = self.plant.get_depth() 
 
             # Call your controller here  
-            #actions[t] =
-          
             actions[t] =self.cont.control(mission.reference[t]-positions[t,1])
             self.plant.transition(actions[t], disturbances[t])
         
