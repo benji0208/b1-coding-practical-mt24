@@ -64,6 +64,7 @@ class Trajectory:
 
 @dataclass
 class Mission:
+
     reference: np.ndarray
     cave_height: np.ndarray
     cave_depth: np.ndarray
@@ -79,6 +80,7 @@ class Mission:
         reference = data[:,0]
         cave_height = data[:,1]
         cave_depth = data[:,2]
+        return cls(reference, cave_height, cave_depth)
          
         
 
@@ -99,9 +101,11 @@ class ClosedLoop:
         self.plant.reset_state()
 
         for t in range(T):
-            positions[t] = self.plant.get_position()
-            observation_t = self.plant.get_depth()
-            # Call your controller here
+            positions[t] = self.plant.get_position() #x y value 
+            observation_t = self.plant.get_depth() #just a y value 
+            # Call your controller here with aim of finding actions. using error.
+            # as input to the controller pass the error and diffferential error into the controller.  
+
             self.plant.transition(actions[t], disturbances[t])
 
         return Trajectory(positions)
