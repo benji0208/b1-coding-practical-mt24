@@ -68,7 +68,6 @@ class Mission:
     cave_height: np.ndarray
     cave_depth: np.ndarray
 
-    @classmethod
     def random_mission(cls, duration: int, scale: float):
         (reference, cave_height, cave_depth) = generate_reference_and_limits(duration, scale)
         return cls(reference, cave_height, cave_depth)
@@ -76,7 +75,12 @@ class Mission:
     @classmethod
     def from_csv(cls, file_name: str):
         # You are required to implement this method
-        pass
+        data = np.genfromtxt(file_name, delimiter=',', skip_header=1)
+        reference = data[:,0]
+        cave_height = data[:,1]
+        cave_depth = data[:,2]
+         
+        
 
 
 class ClosedLoop:
