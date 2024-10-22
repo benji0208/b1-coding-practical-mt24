@@ -75,21 +75,22 @@ class Mission:
         return cls(reference, cave_height, cave_depth)
 
     @classmethod
+    
     def from_csv(cls, file_name: str):
         # You are required to implement this method
         data = np.genfromtxt(file_name, delimiter=',', skip_header=1)
         reference = data[:,0]
         cave_height = data[:,1]
         cave_depth = data[:,2]
+        print("arr")
         return cls(reference, cave_height, cave_depth)
          
         
 
 
 class ClosedLoop:
-    def __init__(self, plant: Submarine, controller):
+    def __init__(self, plant: Submarine):
         self.plant = plant
-        self.controller = controller
 
     def simulate(self,  mission: Mission, disturbances: np.ndarray) -> Trajectory:
 
@@ -106,11 +107,11 @@ class ClosedLoop:
             observation_t = self.plant.get_depth() 
 
             # Call your controller here  
-            error_current = positions[t] - mission.reference[t]
+            error_current = mission.reference[t]-positions[t,1]  
             if t == 0:
                 error_previous = 0
             else:
-                error_previous = positions[t-1] - mission.reference[t-1] 
+                error_previous = mission.reference[t-1] - positions[t-1,1] 
 
             actions[t] = controller(error_current,error_previous)  
             self.plant.transition(actions[t], disturbances[t])
