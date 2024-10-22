@@ -3,6 +3,7 @@ from dataclasses import dataclass
 import numpy as np
 import matplotlib.pyplot as plt
 from .terrain import generate_reference_and_limits
+from .control import controller 
 
 class Submarine:
     def __init__(self):
@@ -101,11 +102,17 @@ class ClosedLoop:
         self.plant.reset_state()
 
         for t in range(T):
-            positions[t] = self.plant.get_position() #x y value 
-            observation_t = self.plant.get_depth() #just a y value 
-            # Call your controller here with aim of finding actions. using error.
-            # as input to the controller pass the error and diffferential error into the controller.  
+            positions[t] = self.plant.get_position() 
+            observation_t = self.plant.get_depth() 
 
+            # Call your controller here  
+            error_current = positions[t] - mission.reference[t]
+            if t == 0:
+                error_previous = 0
+            else:
+                error_previous = positions[t-1] - mission.reference[t-1] 
+
+            actions[t] = controller(error_current,error_previous)  
             self.plant.transition(actions[t], disturbances[t])
 
         return Trajectory(positions)
