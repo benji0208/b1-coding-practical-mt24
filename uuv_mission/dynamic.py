@@ -89,8 +89,9 @@ class Mission:
 
 
 class ClosedLoop:
-    def __init__(self, plant: Submarine):
+    def __init__(self, plant: Submarine, cont):
         self.plant = plant
+        self.cont = cont
 
     def simulate(self,  mission: Mission, disturbances: np.ndarray) -> Trajectory:
 
@@ -107,15 +108,11 @@ class ClosedLoop:
             observation_t = self.plant.get_depth() 
 
             # Call your controller here  
-            error_current = mission.reference[t]-positions[t,1]  
-            if t == 0:
-                error_previous = 0
-            else:
-                error_previous = mission.reference[t-1] - positions[t-1,1] 
-
-            actions[t] = controller(error_current,error_previous)  
+            #actions[t] =
+          
+            actions[t] =self.cont.control(mission.reference[t]-positions[t,1])
             self.plant.transition(actions[t], disturbances[t])
-
+        
         return Trajectory(positions)
         
     def simulate_with_random_disturbances(self, mission: Mission, variance: float = 0.5) -> Trajectory:
